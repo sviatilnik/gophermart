@@ -7,6 +7,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/sviatilnik/gophermart/internal/config"
+	"github.com/sviatilnik/gophermart/internal/infrastructure/http/handlers"
+	middleware2 "github.com/sviatilnik/gophermart/internal/infrastructure/http/middleware"
 	"go.uber.org/zap"
 	"net/http"
 	"os"
@@ -16,16 +18,18 @@ import (
 )
 
 func main() {
+	// TODO Сделать отключение приложения красивее
 	conf := getConfig()
+
 	r := chi.NewRouter()
+	r.Use(middleware2.GZIPCompress)
+	r.Use(middleware.Logger)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 
 	logger := getLogger()
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		logger.Info(r.RequestURI)
-	})
+	r.Get("/", handlers.GetUser())
 
 	quitChan := make(chan os.Signal, 1)
 	signal.Notify(quitChan, syscall.SIGINT, syscall.SIGTERM)
@@ -37,6 +41,7 @@ func main() {
 
 	go func() {
 		logger.Info(fmt.Sprintf("start server on %s", server.Addr))
+
 		err := server.ListenAndServe()
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logger.Fatal(err.Error())
@@ -63,7 +68,7 @@ func getConfig() config.Config {
 }
 
 func getLogger() *zap.SugaredLogger {
-	logger, err := zap.NewDevelopment()
+	logger, err := zap.NewProduction()
 	if err != nil {
 		panic(err)
 	}
