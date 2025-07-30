@@ -11,6 +11,10 @@ type EnvGetter interface {
 
 type OSEnvGetter struct{}
 
+func NewOSEnvGetter() *OSEnvGetter {
+	return &OSEnvGetter{}
+}
+
 func (O *OSEnvGetter) LookupEnv(key string) (string, bool) {
 	return os.LookupEnv(key)
 }
