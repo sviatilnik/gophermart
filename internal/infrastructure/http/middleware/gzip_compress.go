@@ -29,10 +29,11 @@ func GZIPCompress(next http.Handler) http.Handler {
 			return
 		}
 
-		// TODO fix here
+		gz, _ := gzip.NewWriterLevel(w, gzip.BestSpeed)
+		defer gz.Close()
 
-		//w.Header().Set("Content-Encoding", "gzip")
-		next.ServeHTTP(w, r)
+		w.Header().Set("Content-Encoding", "gzip")
+		next.ServeHTTP(gzResponseWriter{ResponseWriter: w, Writer: gz}, r)
 	})
 }
 
@@ -69,11 +70,4 @@ func canCompressContent(r *http.Request) bool {
 		strings.Contains(contentType, "html") ||
 		strings.Contains(contentType, "xml") ||
 		strings.Contains(contentType, "text")
-}
-
-func compressResponse(w http.ResponseWriter) http.ResponseWriter {
-	gz, _ := gzip.NewWriterLevel(w, gzip.BestSpeed)
-	defer gz.Close()
-
-	return gzResponseWriter{ResponseWriter: w, Writer: gz}
 }
