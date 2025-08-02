@@ -12,12 +12,6 @@ type User struct {
 }
 
 func NewUser(login, password string) (*User, error) {
-
-	log, err := value_objects.NewLogin(login)
-	if err != nil {
-		return nil, err
-	}
-
 	pass, err := value_objects.NewPassword(password)
 	if err != nil {
 		return nil, err
@@ -25,7 +19,7 @@ func NewUser(login, password string) (*User, error) {
 
 	return &User{
 		ID:       uuid.NewString(),
-		Login:    log,
+		Login:    value_objects.NewLogin(login),
 		Password: pass,
 	}, nil
 }

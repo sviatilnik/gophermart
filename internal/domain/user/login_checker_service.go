@@ -1,7 +1,5 @@
 package user
 
-/*  */
-
 type LoginChecker interface {
 	Check(login string) error
 }
@@ -16,6 +14,6 @@ func (s *LoginCheckerService) Check(login string) error {
 	if len(login) < 3 || len(login) > 128 {
 		return ErrLoginNotValid
 	}
-	
+
 	return nil
 }

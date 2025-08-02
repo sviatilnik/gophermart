@@ -6,6 +6,6 @@ import (
 
 type Login string
 
-func NewLogin(login string) (Login, error) {
-	return Login(strings.TrimSpace(login)), nil
+func NewLogin(login string) Login {
+	return Login(strings.TrimSpace(login))
 }

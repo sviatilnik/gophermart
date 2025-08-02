@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/sviatilnik/gophermart/internal/config/mock_config"
+	"github.com/sviatilnik/gophermart/internal/infrastructure/config/mock_config"
 	"go.uber.org/mock/gomock"
 	"os"
 	"testing"
